@@ -1,0 +1,3 @@
+# Windows-only tool. Batch files in particular can misbehave with LF-only
+# endings, so force CRLF in the working tree on checkout.
+* text=auto eol=crlf
