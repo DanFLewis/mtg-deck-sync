@@ -11,6 +11,10 @@ Usage:
     sync-decks.cmd [setup|sync|latest|profiles|remove]
 
 `sync` is the default.
+
+The replacement functions below are modified from architrice
+(https://github.com/OwenFeik/architrice), licensed GPL-3.0. This file is
+distributed under the same license; see LICENSE.
 """
 
 import gzip

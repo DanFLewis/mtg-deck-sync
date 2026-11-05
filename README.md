@@ -15,8 +15,8 @@ powershell -ExecutionPolicy Bypass -File bootstrap.ps1
 ```
 
 That finds or installs Python, installs architrice, builds the launcher
-shortcuts, and runs a first sync. Then pin the launcher **yourself** (see
-[Taskbar](#taskbar-pinning-read-this)).
+shortcuts, and runs a first sync. Then pin the launcher by hand (see
+[Taskbar pinning](#taskbar-pinning)).
 
 ## Usage
 
@@ -58,8 +58,9 @@ Moxfield syncs **public decks only**.
 
 ## The architrice patches
 
-The published package is broken against today's Moxfield and Scryfall APIs.
-All of these are applied in `sync_decks.py`.
+The architrice release this was built on was broken against the current
+Moxfield and Scryfall APIs. All of these are applied in `sync_decks.py`.
+Patches 1–3 have since been merged upstream (see [Upstream](#upstream)).
 
 1. **Moxfield deck list (404).** `Moxfield._get_deck_list` used
    `v2/users/{user}/decks`, which was removed. Replaced with
@@ -114,17 +115,15 @@ proceeds.
 
 This matters because a profile created in one environment or session may not
 be present in the architrice database the real session reads
-(`%LOCALAPPDATA%\architrice\architrice.db`). An assistant's tooling in
-particular may run with a redirected `LOCALAPPDATA`, so don't chase that with
-env-var overrides — rely on the self-heal.
+(`%LOCALAPPDATA%\architrice\architrice.db`). A sandboxed or scheduled process
+may run with a redirected `LOCALAPPDATA`; the self-heal covers that without
+env-var overrides.
 
-## Taskbar pinning — read this
+## Taskbar pinning
 
-**Never edit the Windows 11 taskbar pin registry**
-(`...\Explorer\Taskband` → `Favorites` / `FavoritesResolve`) and never
-hand-edit pinned `.lnk` files. Doing that once corrupted a taskbar into an
-un-unpinnable "ghost" icon and wiped the other pins. All pinning and unpinning
-goes through the normal Windows right-click UI, by hand.
+Pin through the normal Windows UI. Editing the taskband registry
+(`Favorites` / `FavoritesResolve`) or pinned `.lnk` files directly can leave a
+ghost icon that can't be unpinned.
 
 On Windows 11 (26xxx builds) **Pin to taskbar is absent from File Explorer's
 context menu** for shortcuts. Pin from the Start menu instead, which is why
@@ -186,7 +185,14 @@ plain Cockatrice shortcut rather than the pinned launcher.
 
 ## Upstream
 
-- Fork with patches 1–3: [`DanFLewis/architrice`](https://github.com/DanFLewis/architrice) (branch `develop`)
-- Upstream bug report: [`OwenFeik/architrice`](https://github.com/OwenFeik/architrice) issue #10
+- Patches 1–3 were merged upstream in
+  [OwenFeik/architrice#11](https://github.com/OwenFeik/architrice/pull/11)
+  (September 2026), fixing [issue #10](https://github.com/OwenFeik/architrice/issues/10).
+  The source branch is [`DanFLewis/architrice`](https://github.com/DanFLewis/architrice) (`develop`).
+- Patches 4–7 are not upstream yet.
 
-Patches 4 and 5 are not yet upstream and are worth contributing.
+## License
+
+[GPL-3.0](LICENSE), the same license as architrice. `sync_decks.py` replaces
+several architrice functions with modified copies of upstream code, so it's
+distributed under architrice's terms.
